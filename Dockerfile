@@ -5,7 +5,7 @@ FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
 # Copy the JAR file into the container
-COPY target/mvpserver-0.0.1-SNAPSHOT.jar app.jar
+COPY target/*.jar app.jar
 
 # Expose the port your Spring Boot app runs on
 EXPOSE 8080
