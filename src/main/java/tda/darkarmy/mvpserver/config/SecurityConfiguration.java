@@ -50,7 +50,7 @@ public class SecurityConfiguration {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://your-production-url.com"));
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://first-buy.netlify.app", "*"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
 		configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
