@@ -31,7 +31,7 @@ public class SecurityConfiguration {
 				.csrf(csrf -> csrf.disable())
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/v1/users/login", "/api/v1/users/signup", "/api/v1/users/verify-otp", "/api/v1/users/reset-password", "/health-check").permitAll()
+						.requestMatchers("/api/v1/users/login", "/api/v1/users/signup", "/api/v1/users/verify-otp", "/api/v1/users/reset-password", "/health-check", "/.well-known/pki-validation/**").permitAll()
 						.anyRequest().authenticated()
 				)
 				.sessionManagement(session -> session
