@@ -1,10 +1,10 @@
 package tda.darkarmy.mvpserver.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import tda.darkarmy.mvpserver.model.Property;
 
 import java.util.List;
 
-public interface PropertyRepository extends JpaRepository<Property, Long> {
-        List<Property> findByUserId(Long userId);
+public interface PropertyRepository extends MongoRepository<Property, String> {
+        List<Property> findByUserId(String userId);
 }

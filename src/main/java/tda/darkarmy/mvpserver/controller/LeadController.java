@@ -22,7 +22,7 @@ public class LeadController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<?> createLead(@PathVariable Long id){
+    public ResponseEntity<?> createLead(@PathVariable String id){
         return status(201).body(leadService.createLead(id));
     }
 }

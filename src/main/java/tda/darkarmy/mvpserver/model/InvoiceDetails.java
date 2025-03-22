@@ -1,23 +1,26 @@
 package tda.darkarmy.mvpserver.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Document(collection = "invoice_details") // Defines MongoDB collection
 public class InvoiceDetails {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id; // MongoDB uses String as ObjectId
+
+    @Field("invoice_number")
     private String invoiceNumber;
+
+    @Field("invoice_date")
     private String invoiceDate;
+
     private String seller;
     private String address;
     private String amount;

@@ -32,7 +32,7 @@ public class PropertyController {
 
     // Get properties by user ID
     @GetMapping("/user/{userId}")
-    public List<Property> getPropertiesByUserId(@PathVariable Long userId) {
+    public List<Property> getPropertiesByUserId(@PathVariable String userId) {
         return propertyService.getPropertiesByUserId(userId);
     }
 
@@ -44,12 +44,12 @@ public class PropertyController {
 
     // Edit Property with Image Upload
     @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
-    public ResponseEntity<Property> editProperty(@PathVariable Long id, @ModelAttribute PropertyDto propertyDTO) throws IOException {
+    public ResponseEntity<Property> editProperty(@PathVariable String id, @ModelAttribute PropertyDto propertyDTO) throws IOException {
         return ResponseEntity.ok(propertyService.editProperty(id, propertyDTO));
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> deleteProperty(@PathVariable Long id) throws ResourceNotFoundException {
+    public ResponseEntity<?> deleteProperty(@PathVariable String id) throws ResourceNotFoundException {
         return status(200).body(propertyService.deleteProperty(id));
     }
 }

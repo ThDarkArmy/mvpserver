@@ -33,7 +33,7 @@ public class NotificationService {
         try{
             System.out.println("Notifications: "+notifications.toString());
             Notifications notifications1 = notificationRepository.save(notifications);
-            notificationRepository.flush();
+//            notificationRepository.flush();
             return notifications1;
         }catch(Exception exception){
             System.out.println("Error Message: "+ exception.getLocalizedMessage());

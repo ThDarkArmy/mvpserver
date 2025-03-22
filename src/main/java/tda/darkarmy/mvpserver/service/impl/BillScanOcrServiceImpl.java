@@ -153,7 +153,7 @@ public class BillScanOcrServiceImpl implements BillScanOcrService {
     }
 
     @Override
-    public InvoiceDetails verify(Long id) {
+    public InvoiceDetails verify(String id) {
         InvoiceDetails invoiceDetails = invoiceDetailsRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Invoice not found!"));
         invoiceDetails.setStatus("Verified");
         return invoiceDetailsRepository.save(invoiceDetails);

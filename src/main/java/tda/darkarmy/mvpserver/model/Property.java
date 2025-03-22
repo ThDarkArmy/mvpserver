@@ -1,20 +1,22 @@
 package tda.darkarmy.mvpserver.model;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.List;
 
-@Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Document(collection = "properties") // Defines MongoDB collection
 public class Property {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id; // MongoDB uses String for ObjectId
 
     private String name;
     private String location;
@@ -22,18 +24,19 @@ public class Property {
     private String builder;
     private String contact;
 
-    @Lob  // Store image as Base64 in DB
+    @Field("image") // Storing Base64 image as a String
     private String image;
 
     private String description;
 
-    @ElementCollection
+    @Field("features")
     private List<String> features;
 
+    @Field("points_required")
     private int pointsRequired;
+
     private String discount;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Field("user_id") // Storing only the User ID (Recommended)
+    private String userId;
 }

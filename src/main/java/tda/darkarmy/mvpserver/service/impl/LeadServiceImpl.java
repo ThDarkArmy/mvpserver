@@ -32,7 +32,7 @@ public class LeadServiceImpl implements LeadService {
         List<Lead> leads = leadRepository.findAll();
         List<LeadDto> leadDtos = leads.stream().map(lead -> {
             Property property = propertyRepository.findById(lead.getPropertyId()).get();
-            User user = userService.getUserById(lead.getUserid()).get();
+            User user = userService.getUserById(lead.getUserId()).get();
             return new LeadDto(lead.getId(), user, property);
         }).collect(Collectors.toList());
 
@@ -40,11 +40,11 @@ public class LeadServiceImpl implements LeadService {
     }
 
     @Override
-    public Lead createLead(Long propertyId) {
+    public Lead createLead(String propertyId) {
         Property property = propertyRepository.findById(propertyId).orElseThrow(()-> new ResourceNotFoundException("Property not found!"));
         User user = userService.getLoggedInUser();
         Lead lead = new Lead();
-        lead.setUserid(user.getId());
+        lead.setUserId(user.getId());
         lead.setPropertyId(property.getId());
         return leadRepository.save(lead);
     }

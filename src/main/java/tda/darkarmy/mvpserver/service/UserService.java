@@ -16,10 +16,10 @@ public interface UserService {
     Optional<User> getUserByEmail(String email);
 
     // Get a user by ID
-    Optional<User> getUserById(Long id);
+    Optional<User> getUserById(String id);
 
     // Update a user's details
-    User updateUser(UserDto userDto, Long id);
+    User updateUser(UserDto userDto, String id);
 
     // Delete a user by ID
     String deleteUser();
@@ -40,7 +40,7 @@ public interface UserService {
 
     User changePassword(PasswordResetRequest request) throws MessagingException;
 
-    String deleteById(Long id);
+    String deleteById(String id);
 
     List<User> findAll();
 

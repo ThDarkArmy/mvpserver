@@ -113,11 +113,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUserById(Long id) {
+    public Optional<User> getUserById(String id) {
         return userRepository.findById(id);
     }
 
-    public User updateUser(UserDto userDto, Long id){
+    public User updateUser(UserDto userDto, String id){
         User user = userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User not found"));
 
         user = toUserEntity(userDto);
@@ -160,11 +160,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(getLoggedInUsername()).get();
     }
 
-    public User getById(Long id){
+    public User getById(String id){
         return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User not found"));
     }
 
-    public Optional<User> getUser(Long userId){
+    public Optional<User> getUser(String userId){
         return userRepository.findById(userId);
     }
 
@@ -185,7 +185,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    public String deleteById(Long id) {
+    public String deleteById(String id) {
         if(getUser(id).isEmpty()) throw new ResourceNotFoundException("User not found");
         userRepository.deleteById(id);
         return "User deleted successfully";

@@ -1,96 +1,71 @@
 package tda.darkarmy.mvpserver.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import tda.darkarmy.mvpserver.enums.Role;
 import tda.darkarmy.mvpserver.enums.SocialLoginProvider;
 
 import java.time.LocalDateTime;
 
 @Data
-@Entity
-@Table(name = "users")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(collection = "users") // MongoDB collection
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(nullable = false, unique = true, length = 255)
     private String email;
 
-    @Column(nullable = false, length = 255)
     private String password;
-
-    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(name = "profile_picture_url", length = 255)
+    @Field("profile_picture_url")
     private String profilePictureUrl;
 
-    @Column(name = "phone_number", length = 15)
+    @Field("phone_number")
     private String phoneNumber;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 50)
-    private Role role; // Enum for role ('USER', 'ADMIN', 'BUILDER')
+    private Role role;
 
-    @Column(name = "email_verified", nullable = false)
+    @Field("email_verified")
     private Boolean emailVerified = false;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate // Automatically sets creation date
+    @Field("created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @LastModifiedDate // Automatically updates on save
+    @Field("updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "points_balance", nullable = false)
+    @Field("points_balance")
     private Integer pointsBalance = 0;
 
-    @Column(name = "reset_token", length = 255)
+    @Field("reset_token")
     private String resetToken;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "social_login_provider", length = 50)
-    private SocialLoginProvider socialLoginProvider; // Enum for 'GOOGLE', 'FACEBOOK', 'NONE'
+    @Field("social_login_provider")
+    private SocialLoginProvider socialLoginProvider;
 
-    @Column(name = "social_login_id", length = 255)
+    @Field("social_login_id")
     private String socialLoginId;
 
-    @Column(name = "is_active", nullable = false)
+    @Field("is_active")
     private Boolean isActive = true;
 
-    @Column(name = "last_login")
+    @Field("last_login")
     private LocalDateTime lastLogin;
 
-    @Column(columnDefinition = "TEXT")
+    @Field("address")
     private String address;
 
     private Long otp;
-
     private String newPassword;
-
-    // @PrePersist for setting default values
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 }
-

@@ -1,7 +1,7 @@
 package tda.darkarmy.mvpserver.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import tda.darkarmy.mvpserver.model.Lead;
 
-public interface LeadRepository extends JpaRepository<Lead, Long> {
+public interface LeadRepository extends MongoRepository<Lead, String> {
 }

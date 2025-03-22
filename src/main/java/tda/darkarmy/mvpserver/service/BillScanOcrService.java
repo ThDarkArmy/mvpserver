@@ -11,5 +11,5 @@ public interface BillScanOcrService {
 
     List<InvoiceDetails> getAll();
 
-    InvoiceDetails verify(Long id);
+    InvoiceDetails verify(String id);
 }

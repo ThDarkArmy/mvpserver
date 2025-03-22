@@ -1,98 +1,40 @@
 package tda.darkarmy.mvpserver.model;
 
-import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Document(collection = "transactions") // Collection name in MongoDB
 public class Transaction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @DBRef // Reference to the User document (not a SQL join)
     private User user;
 
+    @Field("bill_amount")
     private String billAmount;
+
+    @Field("points_earned")
     private int pointsEarned;
+
+    @Field("points_redeemed")
     private int pointsRedeemed;
+
     private String date;
+
+    @Field("property_name")
     private String propertyName;
+
     private String status;
-    private int brokerageFee=0;
 
-    public Transaction() {
-    }
-
-    public int getBrokerageFee() {
-        return brokerageFee;
-    }
-
-    public void setBrokerageFee(int brokerageFee) {
-        this.brokerageFee = brokerageFee;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
-    }
-
-    public int getPointsRedeemed() {
-        return pointsRedeemed;
-    }
-
-    public void setPointsRedeemed(int pointsRedeemed) {
-        this.pointsRedeemed = pointsRedeemed;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getBillAmount() {
-        return billAmount;
-    }
-
-    public void setBillAmount(String billAmount) {
-        this.billAmount = billAmount;
-    }
-
-    public int getPointsEarned() {
-        return pointsEarned;
-    }
-
-    public void setPointsEarned(int pointsEarned) {
-        this.pointsEarned = pointsEarned;
-    }
+    @Field("brokerage_fee")
+    private int brokerageFee = 0;
 }

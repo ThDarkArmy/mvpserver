@@ -1,11 +1,11 @@
 package tda.darkarmy.mvpserver.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import tda.darkarmy.mvpserver.model.User;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends MongoRepository<User, String> {
     // Find user by email
     Optional<User> findByEmail(String email);
 

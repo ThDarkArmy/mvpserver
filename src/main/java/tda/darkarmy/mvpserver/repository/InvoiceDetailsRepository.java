@@ -1,11 +1,10 @@
 package tda.darkarmy.mvpserver.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import tda.darkarmy.mvpserver.model.InvoiceDetails;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface InvoiceDetailsRepository extends JpaRepository<InvoiceDetails, Long> {
+public interface InvoiceDetailsRepository extends MongoRepository<InvoiceDetails, String> {
     List<InvoiceDetails> findByInvoiceNumber(String invoiceNumber);
 }

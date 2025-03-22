@@ -56,7 +56,7 @@ public class PropertyService {
         property.setFeatures(propertyDTO.getFeatures());
         property.setPointsRequired(propertyDTO.getPointsRequired());
         property.setDiscount(propertyDTO.getDiscount());
-        property.setUser(user);
+        property.setUserId(user.getId());
 
         // Convert MultipartFile to Base64
         property.setImage(convertImageToBase64(propertyDTO.getImage()));
@@ -71,7 +71,7 @@ public class PropertyService {
     }
 
     // Edit Property with Image Upload
-    public Property editProperty(Long id, PropertyDto propertyDTO) throws IOException {
+    public Property editProperty(String id, PropertyDto propertyDTO) throws IOException {
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
 
@@ -97,14 +97,14 @@ public class PropertyService {
         return propertyRepository.findAll();
     }
 
-    public String deleteProperty(Long id){
+    public String deleteProperty(String id){
         propertyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
         propertyRepository.deleteById(id);
         return "Property deleted successfully";
     }
 
-    public List<Property> getPropertiesByUserId(Long userId) {
+    public List<Property> getPropertiesByUserId(String userId) {
         return propertyRepository.findByUserId(userId);
     }
 }

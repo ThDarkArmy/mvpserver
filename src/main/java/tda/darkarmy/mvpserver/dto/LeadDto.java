@@ -10,7 +10,7 @@ import tda.darkarmy.mvpserver.model.User;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LeadDto {
-    private Long id;
+    private String id;
     private User user;
     private Property property;
 }

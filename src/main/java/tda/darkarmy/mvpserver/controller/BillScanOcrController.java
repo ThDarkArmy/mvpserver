@@ -26,7 +26,7 @@ public class BillScanOcrController {
     }
 
     @PutMapping("/verify-receipt/{id}")
-    public ResponseEntity<?> verifyReceipt(@PathVariable Long id){
+    public ResponseEntity<?> verifyReceipt(@PathVariable String id){
         return status(200).body(billScanOcrService.verify(id));
     }
 }

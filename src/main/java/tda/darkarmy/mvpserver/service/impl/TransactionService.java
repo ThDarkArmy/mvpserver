@@ -57,7 +57,7 @@ public class TransactionService {
     }
 
     public Transaction redeem(Transaction transaction) {
-        Property property = propertyRepository.findById(Long.parseLong(transaction.getPropertyName())).orElseThrow(()-> new ResourceNotFoundException("Property not found!"));
+        Property property = propertyRepository.findById(transaction.getPropertyName()).orElseThrow(()-> new ResourceNotFoundException("Property not found!"));
         transaction.setStatus("Completed");
         transaction.setPropertyName(property.getName());
         transaction.setUser(userService.getLoggedInUser());

@@ -9,5 +9,5 @@ import java.util.List;
 public interface LeadService {
     List<LeadDto> getAllLeads();
 
-    Lead createLead(Long propertyId);
+    Lead createLead(String propertyId);
 }
