@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -54,6 +55,18 @@ public class BillScanOcrServiceImpl implements BillScanOcrService {
         } catch (IOException e) {
             throw new RuntimeException("Issue in creating file directory");
         }
+    }
+
+    public List<String> extractAllPatterns(String text, String regex) {
+        List<String> matches = new ArrayList<>();
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+
+        while (matcher.find()) {
+            matches.add(matcher.group(1));
+        }
+
+        return matches;
     }
 
     private String extractPattern(String text, String regex) {
@@ -97,7 +110,6 @@ public class BillScanOcrServiceImpl implements BillScanOcrService {
     }
 
 
-    @Override
     public InvoiceDetails scanBill(BillScanOcrDto billScanOcrDto) {
         try {
             // Save the file locally (optional)
@@ -105,35 +117,49 @@ public class BillScanOcrServiceImpl implements BillScanOcrService {
             fileName = fileName.replace(" ", "");
             String filePathString = fileStoragePath + "\\" + fileName;
             Path filePath = Paths.get(filePathString);
-
             Files.copy(billScanOcrDto.getBill().getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // Extract text from PDF
             String extractedText = PdfReader.extractTextFromPDF(filePathString);
-            AmazonBillParser.parseBill(extractedText);
-
             InvoiceDetails details = new InvoiceDetails();
             details.setStatus("Pending");
-            details.setInvoiceNumber(extractPattern(extractedText, "Invoice Number\\s*:\\s*(\\S+)"));
-            details.setInvoiceDate(extractPattern(extractedText, "Invoice Date\\s*:\\s*([0-9./-]+)"));
 
+            // Detect whether it's Amazon or Flipkart
+            if (extractedText.contains("Invoice Number") && extractedText.contains("Order Number")) {
+                // Amazon Invoice
+//                AmazonBillParser.parseBill(extractedText);
+                details.setInvoiceNumber(extractPattern(extractedText, "Invoice Number\\s*:\\s*(\\S+)"));
+                details.setInvoiceDate(extractPattern(extractedText, "Invoice Date\\s*:\\s*([0-9./-]+)"));
+                details.setSeller(extractPattern(extractedText, "Sold By\\s*:\\s*([^\\n]+)"));
+                details.setAddress(extractPattern(extractedText, "Sold By\\s*:\\s*[^\\n]+\\n(.*?)(\\n\\n|Billing Address)", Pattern.DOTALL));
+                details.setAmount(extractPattern(extractedText, "Invoice Value\\s*:\\s*([₹0-9,.]+)"));
+            } else if (extractedText.contains("Original Invoice Number:") && extractedText.contains("Order ID:")) {
+                // Flipkart Invoice
+//                FlipkartBillParser.parseBill(extractedText);
+                details.setInvoiceNumber(extractPattern(extractedText, "Original Invoice Number:\\s*(\\S+)"));
+                details.setInvoiceDate(extractPattern(extractedText, "Order Date:\\s*(\\S+)(\\n|Invoice)"));
+                details.setSeller(extractPattern(extractedText, "Sold By\\s*:\\s*([^\\n]+)"));
+                details.setAddress(extractPattern(extractedText, "Sold By\\s*:\\s*[^\\n]+\\n(.*?)(\\n\\n|GSTIN)", Pattern.DOTALL));
+                List<String> amountMatches = extractAllPatterns(extractedText, "₹\\s*([0-9,.]+)");
 
-            String soldByBlock = extractPattern(extractedText, "Sold By\\s*:\\s*(.*?)(\\n\\n|Billing Address)", Pattern.DOTALL);
-            if (soldByBlock != null) {
-                String[] soldByParts = soldByBlock.split("\\n", 2);
-                details.setSeller(soldByParts[0].trim());
-                if (soldByParts.length > 1) {
-                    details.setAddress(cleanAddress(soldByParts[1].trim()));
-                }
+                // Sum up all found values
+                double totalAmount = amountMatches.stream()
+                        .mapToDouble(amount -> Double.parseDouble(amount.replaceAll(",", "")))
+                        .sum();
+//                details.setAmount(extractPattern(extractedText, "Total\\s*₹\\s*([0-9,.]+)"));
+                details.setAmount(String.valueOf(totalAmount));
+            } else {
+                throw new RuntimeException("Unsupported invoice format");
             }
 
+            // Check for duplicate invoices
+            List<InvoiceDetails> existingInvoices = invoiceDetailsRepository.findByInvoiceNumber(details.getInvoiceNumber());
+            if (!existingInvoices.isEmpty()) throw new UserAlreadyExistsException("Invoice already exists");
 
-            List<InvoiceDetails> invoiceDetailsOptional = invoiceDetailsRepository.findByInvoiceNumber(details.getInvoiceNumber());
-            if(invoiceDetailsOptional.size()>0) throw new UserAlreadyExistsException("Invoice already exists");
-            details.setAmount(extractPattern(extractedText, "Invoice Value\\s*:\\s*([₹0-9,.]+)"));
+            // Create Transaction
             Transaction transaction = new Transaction();
-            transaction.setBillAmount(extractPattern(extractedText, "Invoice Value\\s*:\\s*([₹0-9,.]+)"));
-            transaction.setPointsEarned((int)Double.parseDouble(transaction.getBillAmount().replaceAll(",", "")) * POINTS_CONVERSION_RATE);
+            transaction.setBillAmount(details.getAmount());
+            transaction.setPointsEarned((int) Double.parseDouble(transaction.getBillAmount().replaceAll(",", "")) * POINTS_CONVERSION_RATE);
             transaction.setUser(userService.getLoggedInUser());
             transaction.setDate(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
             transaction.setStatus("Completed");
@@ -141,11 +167,11 @@ public class BillScanOcrServiceImpl implements BillScanOcrService {
             transactionRepository.save(transaction);
 
             return invoiceDetailsRepository.save(details);
-
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error processing invoice", e);
         }
     }
+
 
     @Override
     public List<InvoiceDetails> getAll() {
