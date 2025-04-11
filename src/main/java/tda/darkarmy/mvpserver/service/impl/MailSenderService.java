@@ -1,10 +1,17 @@
 package tda.darkarmy.mvpserver.service.impl;
 
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import tda.darkarmy.mvpserver.model.User;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 
 @Service
@@ -38,5 +45,26 @@ public class MailSenderService {
                 "<a href="+verificationUrl+"><button style='color: 'blue''>Verify Account</button></a><br>"+
                 "<h5>Warm Regards</h5>"+
                 "<h5>Rateberg</h5>";
+    }
+
+    public void sendOtpEmail(String toEmail, String userName, String otpCode) throws MessagingException, IOException, IOException {
+        // Load HTML template
+        Resource resource = new ClassPathResource("templates/otp-email-template.html");
+        String htmlContent = Files.readString(resource.getFile().toPath(), StandardCharsets.UTF_8);
+
+        // Replace placeholders
+        htmlContent = htmlContent
+                .replace("{{USER_NAME}}", userName)
+                .replace("{{OTP_CODE}}", otpCode);
+
+        // Create email
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+        helper.setTo(toEmail);
+        helper.setSubject("Your OTP for First-Buy.in Verification");
+        helper.setFrom("firstbuyrewards.check@gmail.com");
+        helper.setText(htmlContent, true); // true = isHtml
+
+        javaMailSender.send(message);
     }
 }

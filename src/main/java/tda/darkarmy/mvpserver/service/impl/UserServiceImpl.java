@@ -24,6 +24,7 @@ import tda.darkarmy.mvpserver.repository.TransactionRepository;
 import tda.darkarmy.mvpserver.repository.UserRepository;
 import tda.darkarmy.mvpserver.service.UserService;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public User signup(UserDto userDto) throws MessagingException {
+    public User signup(UserDto userDto) throws MessagingException, IOException {
 
         Optional<User> userOptional = userRepository.findByEmail(userDto.getEmail());
         if(userOptional.isPresent() && userOptional.get().getEmailVerified()) throw new UserAlreadyExistsException("User with given email already exists");
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService {
         Long otp = new Random().nextLong(9999 - 1000 + 1) + 1000;
         user.setOtp(otp);
 
-        mailSenderService.send(user, otp.toString());
+        mailSenderService.sendOtpEmail(user.getEmail(), user.getName(), otp.toString());
         user = userRepository.save(user);
         Transaction transaction = new Transaction();
         transaction.setPointsEarned(5000);

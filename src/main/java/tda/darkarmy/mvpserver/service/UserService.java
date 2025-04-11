@@ -7,6 +7,7 @@ import tda.darkarmy.mvpserver.dto.PasswordResetRequest;
 import tda.darkarmy.mvpserver.dto.UserDto;
 import tda.darkarmy.mvpserver.model.User;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public interface UserService {
     // Get a user by reset token
     User getUserByResetToken(String token);
 
-    User signup(UserDto userDto) throws MessagingException;
+    User signup(UserDto userDto) throws MessagingException, IOException;
 
     String verifyOtp(String email, Long otp);
 

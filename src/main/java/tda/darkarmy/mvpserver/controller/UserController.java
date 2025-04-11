@@ -11,6 +11,8 @@ import tda.darkarmy.mvpserver.dto.UserDto;
 import tda.darkarmy.mvpserver.dto.VerifyOtpDto;
 import tda.darkarmy.mvpserver.service.UserService;
 
+import java.io.IOException;
+
 import static org.springframework.http.ResponseEntity.status;
 
 @RestController
@@ -32,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody UserDto userDto) throws MessagingException {
+    public ResponseEntity<?> signup(@Valid @RequestBody UserDto userDto) throws MessagingException, IOException {
         return status(201).body(userService.signup(userDto));
     }
 
