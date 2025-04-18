@@ -1,5 +1,6 @@
 package tda.darkarmy.mvpserver.exception;
 
+import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +66,14 @@ public class GlobalExceptionHandler {
         return status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), exception.getMessage(), null));
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleRuntimeException(RuntimeException exception){
+        return status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage(), null));
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception exception){
+        return status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage(), null));
+    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException exception){
