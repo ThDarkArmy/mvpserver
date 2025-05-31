@@ -54,6 +54,7 @@ public class SecurityConfiguration {
 								new AntPathRequestMatcher("/api/auth/**"),
 								new AntPathRequestMatcher("/api/v1/users/login"),
 								new AntPathRequestMatcher("/api/v1/users/signup"),
+								new AntPathRequestMatcher("/health-check"),
 								new AntPathRequestMatcher("/oauth2/**")
 						).permitAll()
 						.anyRequest().authenticated()

@@ -17,7 +17,7 @@ public class MvpserverApplication {
 		ssl on;
 		ssl_certificate /etc/nginx/certificates/server.crt;
 		ssl_certificate_key /etc/nginx/certificates/server.key;
-		server_name 35.174.200.157;
+		server_name 44.203.45.70;
 		location / {
 				proxy_pass http://127.0.0.1:8080;
         }
@@ -25,9 +25,9 @@ public class MvpserverApplication {
 
 	server {
 		listen 80;
-		server_name 35.174.200.157;
+		server_name 44.203.45.70;
 		location / {
-				proxy_pass http://127.0.0.1:5173;
+				proxy_pass http://127.0.0.1:8080;
         }
 	}
 */
