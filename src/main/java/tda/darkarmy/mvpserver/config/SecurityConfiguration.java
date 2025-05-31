@@ -61,34 +61,11 @@ public class SecurityConfiguration {
 						.anyRequest().authenticated()
 				)
 				.authenticationProvider(authenticationProvider)
-
-
-				// Configure form login
-//				.formLogin(form -> form
-//						.loginProcessingUrl("/api/auth/login")
-//						.successHandler((request, response, authentication) -> {
-//							String token = jwtTokenProvider.generateToken(authentication);
-//							response.setContentType("application/json");
-//							new ObjectMapper().writeValue(response.getWriter(),
-//									Map.of("token", token, "username", authentication.getName()));
-//						})
-//						.failureHandler((request, response, exception) -> {
-//							response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//							response.setContentType("application/json");
-//							new ObjectMapper().writeValue(response.getWriter(),
-//									Map.of("error", "Login failed"));
-//						})
-//				)
-
 				// Configure OAuth2 login
 				.oauth2Login(oauth2 -> oauth2
 						.authorizationEndpoint(auth -> auth
 								.baseUri("/oauth2/authorize")
 						)
-//						.redirectionEndpoint(redirect -> redirect
-//								.baseUri("/oauth2/callback/*")
-//						)
-//						http://localhost:8080/oauth2/callback/google
 						.userInfoEndpoint(userInfo -> userInfo
 								.userService(customOAuth2UserService)
 						)
@@ -107,51 +84,7 @@ public class SecurityConfiguration {
 		return http.build();
 	}
 
-//	@Bean
-//	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//		return http
-//				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-//				.csrf(csrf -> csrf
-//						.ignoringRequestMatchers("/login/oauth2/code/**", "/api/v1/users/**")
-//				)
-//				.authorizeHttpRequests(auth -> auth
-//						.requestMatchers(
-//								"/oauth2/**",
-//								"/login/oauth2/code/**",
-//								"/api/v1/users/login",
-//								"/api/v1/users/signup",
-//								"/.well-known/**"
-//						).permitAll()
-//						.anyRequest().authenticated()
-//				)
-//				.authenticationProvider(authenticationProvider) // ← CRITICAL FOR JWT
-//				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-//				.sessionManagement(session -> session
-//						.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // For OAuth2
-//				)
-//				.build();
-//	}
 
-
-//	@Bean
-//	public WebSecurityCustomizer webSecurityCustomizer() {
-//		return web -> web.ignoring().requestMatchers(
-//				"/favicon.ico",
-//				"/error",
-//				"/webjars/**",
-//				"/static/**"
-//		);
-//	}
-
-//	@Bean
-//	public CookieSerializer cookieSerializer() {
-//		DefaultCookieSerializer serializer = new DefaultCookieSerializer();
-//		serializer.setCookieName("OAUTH2SESSION");
-//		serializer.setSameSite("Lax");  // Important for OAuth2
-//		serializer.setUseHttpOnlyCookie(true);
-//		serializer.setCookiePath("/");
-//		return serializer;
-//	}
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
