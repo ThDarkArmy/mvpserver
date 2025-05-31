@@ -52,6 +52,7 @@ public class SecurityConfiguration {
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(
 								new AntPathRequestMatcher("/api/auth/**"),
+								new AntPathRequestMatcher("/.well-known/pki-validation/AA1EB99B81955FF9C9299CA98353416B.txt"),
 								new AntPathRequestMatcher("/api/v1/users/login"),
 								new AntPathRequestMatcher("/api/v1/users/signup"),
 								new AntPathRequestMatcher("/health-check"),
