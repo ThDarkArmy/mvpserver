@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.List;
 
@@ -12,11 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(collection = "properties") // Defines MongoDB collection
+@Document(collection = "properties")
 public class Property {
 
     @Id
-    private String id; // MongoDB uses String for ObjectId
+    private String id;
 
     private String name;
     private String location;
@@ -24,8 +23,8 @@ public class Property {
     private String builder;
     private String contact;
 
-    @Field("image") // Storing Base64 image as a String
-    private String image;
+    @Field("images") // Renamed to "images" and changed type to List<String>
+    private List<String> images; // List of image URLs or Base64-encoded strings
 
     private String description;
 
@@ -37,6 +36,6 @@ public class Property {
 
     private String discount;
 
-    @Field("user_id") // Storing only the User ID (Recommended)
+    @Field("user_id")
     private String userId;
 }

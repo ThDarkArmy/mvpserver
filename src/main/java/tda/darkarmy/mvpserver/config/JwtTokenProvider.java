@@ -5,11 +5,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -61,6 +63,20 @@ public class JwtTokenProvider {
 		return Jwts.builder()
 				.setClaims(claims)
 				.setSubject(authentication.getName())
+				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
+				.signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+				.compact();
+	}
+
+	public String generateTokenWithAuthorities(String email, List<GrantedAuthority> grantedAuthorities) {
+
+		Map<String, Object> claims = new HashMap<>();
+		claims.put("auth", grantedAuthorities);
+
+		return Jwts.builder()
+				.setClaims(claims)
+				.setSubject(email)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
 				.signWith(SignatureAlgorithm.HS512, SECRET_KEY)

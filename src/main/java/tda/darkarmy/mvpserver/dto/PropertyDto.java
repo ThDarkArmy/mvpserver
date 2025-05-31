@@ -1,6 +1,5 @@
 package tda.darkarmy.mvpserver.dto;
 
-
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,11 +16,12 @@ public class PropertyDto {
     private int price;
     private String builder;
     private String contact;
-    private MultipartFile image; // Multipart file for image upload
+
+    // Changed from MultipartFile to List<MultipartFile>
+    private List<MultipartFile> images;
+
     private String description;
     private List<String> features;
     private int pointsRequired;
     private String discount;
-    private Long userId;  // User ID for association
 }
-

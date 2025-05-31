@@ -1,5 +1,6 @@
 package tda.darkarmy.mvpserver.service.impl;
 
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PropertyService {
@@ -44,8 +46,8 @@ public class PropertyService {
 
     // Create Property with Image Upload
     public Property createProperty(PropertyDto propertyDTO) throws IOException {
+        System.out.println("PropertyDto: "+propertyDTO.toString());
         User user = userService.getLoggedInUser();
-
         Property property = new Property();
         property.setName(propertyDTO.getName());
         property.setLocation(propertyDTO.getLocation());
@@ -59,7 +61,14 @@ public class PropertyService {
         property.setUserId(user.getId());
 
         // Convert MultipartFile to Base64
-        property.setImage(convertImageToBase64(propertyDTO.getImage()));
+        List<String> base64Images = propertyDTO.getImages().stream().map(image-> {
+            try {
+                return convertImageToBase64(image);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
+        property.setImages(base64Images);
         Notifications notifications = new Notifications();
         notifications.setRead(false);
         notifications.setCreatedAt(LocalDateTime.now());
@@ -71,6 +80,7 @@ public class PropertyService {
     }
 
     // Edit Property with Image Upload
+    @SneakyThrows
     public Property editProperty(String id, PropertyDto propertyDTO) throws IOException {
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
@@ -86,9 +96,14 @@ public class PropertyService {
         property.setDiscount(propertyDTO.getDiscount());
 
         // If a new image is uploaded, replace the existing one
-        if (propertyDTO.getImage() != null && !propertyDTO.getImage().isEmpty()) {
-            property.setImage(convertImageToBase64(propertyDTO.getImage()));
-        }
+        List<String> base64Images = propertyDTO.getImages().stream().map(image-> {
+            try {
+                return convertImageToBase64(image);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
+        property.setImages(base64Images);
 
         return propertyRepository.save(property);
     }
