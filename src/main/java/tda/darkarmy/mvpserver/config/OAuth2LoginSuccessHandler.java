@@ -81,7 +81,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         grantedAuthorityList.add(new SimpleGrantedAuthority("ROLE_"+user.getRole()));
         String token = jwtTokenProvider.generateTokenWithAuthorities(email, grantedAuthorityList);
 
-        String redirectUrl = "https://first-buy.in?token=" + token +"&name="+user.getName()+"&role="+user.getRole().name()+"&id="+user.getId();
+        String redirectUrl = "https://first-buy.com?token=" + token +"&name="+user.getName()+"&role="+user.getRole().name()+"&id="+user.getId();
 
         response.sendRedirect(redirectUrl);
 //        LoginResponse loginResponse = LoginResponse.builder().token(token).user(user).build();
